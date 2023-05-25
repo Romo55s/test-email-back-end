@@ -8,3 +8,7 @@ app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({extended:false}));
 
 app.use(require('./routes/email.routes'));
+
+app.listen('3000', () =>{
+    console.log('Listening');
+});

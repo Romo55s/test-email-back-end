@@ -17,20 +17,23 @@ const sendEmail = (req = request, res = response) => {
 
   // Contenido del correo
   const options = {
-    from: 'Bisne',
+    from: 'test9072686@gmail.com',
     subject: body.about,
     to: body.email,
     text: body.mssg
   };
 
+  const optionsJson = JSON.stringify(options);
+
   config.sendMail(options, function(error, result) {
     console.log(options);
+    console.log(optionsJson);
     if (error) {
       return res.json({ ok: false, msg: error });
     }
     return res.json({
       ok: true,
-      msg: result
+      msg: optionsJson
     });
   });
 };
