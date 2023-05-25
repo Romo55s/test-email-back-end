@@ -25,6 +25,7 @@ const sendEmail = (req=request,resp=response) =>{
     };
 
     config.sendMail(options,function(error,result){
+        console.log(options);
         if (error) return resp.json({ok: false, msg: error});
         return resp.json({
             ok:true,
