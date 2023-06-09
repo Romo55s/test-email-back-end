@@ -1,11 +1,11 @@
 const { request, response } = require('express');
 const nodeMailer = require('nodemailer');
 
-// Funcion para mandar el correo
+// Function to send the email and respond to the client
 const sendEmail = (req = request, res = response) => {
   let body = req.body;
 
-  // Protocolo por el cual se va a mandar el correo y la cuenta desde la cual se enviará
+  // Email configuration
   let config = nodeMailer.createTransport({
     host: 'smtp.gmail.com',
     port: 587,
@@ -15,25 +15,37 @@ const sendEmail = (req = request, res = response) => {
     }
   });
 
-  // Contenido del correo
-  const options = {
-    from: 'test9072686@gmail.com',
-    subject: body.about,
-    to: body.email,
+  // Complaint email content
+  const complaintOptions = {
+    from: body.email,
+    subject: 'Received Complaint',
+    to: 'test9072686@gmail.com',
     text: body.mssg
   };
 
-  const optionsJson = JSON.stringify(options);
+  // Response email content
+  const responseOptions = {
+    from: 'test9072686@gmail.com',
+    subject: 'Courtesy Message',
+    to: body.email,
+    text: `Dear Customer,\n\nThank you for reaching out to us. We have received your complaint and our team is reviewing it. We will get back to you as soon as possible with a solution.\n\nWe appreciate your patience.\n\nBest regards,\nThe Support Team`
+  };
 
-  config.sendMail(options, function(error, result) {
-    console.log(options);
-    console.log(optionsJson);
+  config.sendMail(complaintOptions, function(error, result) {
     if (error) {
       return res.json({ ok: false, msg: error });
     }
-    return res.json({
-      ok: true,
-      msg: optionsJson
+    
+    // Send the response email to the client
+    config.sendMail(responseOptions, function(responseError, responseResult) {
+      if (responseError) {
+        return res.json({ ok: false, msg: responseError });
+      }
+
+      return res.json({
+        ok: true,
+        msg: 'Email sent successfully'
+      });
     });
   });
 };
